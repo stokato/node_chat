@@ -3,8 +3,8 @@
     "host": "localhost",
     "port": 3000
   },
-  "cassandra" : {
-    "host": "127.0.0.1",
-    "keyspace": "free_friends2"
+  "auth" : {
+    "APIID": "4853914",
+    "APISECRET": "06G0eKuPliE1M4mHQU3S"
   }
 }
