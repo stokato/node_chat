@@ -1,10 +1,16 @@
 {
-  "server" : {
-    "host": "localhost",
-    "port": 3000
+  "server": {
+      "host": "localhost",
+      "port": 3000
   },
-  "auth" : {
-    "APIID": "4853914",
-    "APISECRET": "06G0eKuPliE1M4mHQU3S"
+  "auth": {
+      "APIID": "4853914",
+      "APISECRET": "06G0eKuPliE1M4mHQU3S"
+  },
+  "db": {
+      "host": "localhost",
+      "database": "chat_db",
+      "user": "root",
+      "password": "root"
   }
 }

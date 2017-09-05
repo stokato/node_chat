@@ -1,11 +1,13 @@
 const socketio  =  require('socket.io');
 
 const sendMessage = require('./lib/send_message');
+const phpBroadcast = require('./lib/php_broadcast');
+const db = require('./../db');
 
 let io = null;                                      // Сокет
 
 /*
- При подключении вешаем эмиттеры
+ При подключении вешаем эмиттеры и создаем соединение с базой данных
  */
 module.exports.listen = function(server, callback) {
     io = socketio.listen(server);
@@ -14,8 +16,12 @@ module.exports.listen = function(server, callback) {
     
     io.sockets.on('connection', function (socket) {
         sendMessage(socket);
+        phpBroadcast(socket);
     });
     
-    callback();
+    db.getConnection().connect(() => {
+        "use strict";
+        callback();
+    });
 };
 

@@ -31,3 +31,10 @@ node_modules
 
 #public
 public
+
+#php lib
+vendor
+
+#composer
+*.phar
+*.lock

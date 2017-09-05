@@ -5,9 +5,9 @@ const fs = require("fs");
 
 // let server = http.createServer();
 
-var server = http.createServer( function(req, res) {
+let server = http.createServer( function(req, res) {
     
-    var localPath;
+    let localPath;
     if(req.method == 'GET') {
         
         localPath = path.join(__dirname, '/public/', "index.html");

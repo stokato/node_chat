@@ -6,7 +6,6 @@ const uuid4 = require('uuid/v4');
 const md5   = require('md5');
 
 const sanitize = require('./sanitize');
-const db = require('./../../db');
 
 const Config     = require('./../../config.json');
 
@@ -19,10 +18,8 @@ const Config     = require('./../../config.json');
  * @param socket            сокет
  */
 module.exports = function (socket) {
-    socket.on('message', function(options) { options = options || {};
-        if(options['auth_key'] !== md5(Config.auth.APIID + "_" + options.vid_from + "_" + Config.auth.APISECRET)) {
-            return;
-        }
+    socket.on('php_broadcast', function(optionsStr) { optionsStr = optionsStr || '';
+        let options = optionsStr;
         
         let message = {
             chat_vid: sanitize(options.chat_vid),
@@ -33,17 +30,9 @@ module.exports = function (socket) {
             type: sanitize(options.type),
             params: options.params
         };
-        
-        db.getConnection().saveMessage(message, (err, res) => {
-            "use strict";
-            
-            if (err) {
-                return console.error('Ошибка при сохранении сообщения в БД');
-            }
     
-            socket.broadcast.emit('message', message);
-            socket.emit('message', message);
-        });
+        socket.broadcast.emit('message', message);
+        socket.emit('message', message);
     });
 };
 
