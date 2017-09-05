@@ -19,7 +19,7 @@ $client = new Client(new Version2X('http://localhost:3000', [
 ]));
 $client->initialize();
 
-$client->emit('php_broadcast', array(
+$msg = array(
     'chat_vid' => '3333',
     'vid_from' => '3333',
     'vid_to' => '0000',
@@ -27,5 +27,9 @@ $client->emit('php_broadcast', array(
     'type' => 'message',
     'params' => array('a' => [1, 2, 3], 'b' => 'b', 'c' => 3),
 //    'auth_key' => $auth_key
-));
+);
+
+$client->emit('php_broadcast', $msg);
 $client->close();
+
+print_r($msg);
