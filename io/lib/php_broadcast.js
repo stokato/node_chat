@@ -3,8 +3,6 @@
  */
 
 const uuid4 = require('uuid/v4');
-const md5   = require('md5');
-
 const sanitize = require('./sanitize');
 
 const Config     = require('./../../config.json');

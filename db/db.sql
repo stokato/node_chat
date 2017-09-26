@@ -8,6 +8,7 @@ CREATE TABLE `messages` (
   `message_text` text,
   `message_id` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
+  `timestamp` bigint NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 

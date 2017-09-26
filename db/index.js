@@ -6,6 +6,7 @@ const mysql      = require('mysql');
 
 const Config = require('./../config.json').db;
 const saveMessage = require('./lib/save_message');
+const getHistory = require('./lib/get_history');
 
 let _connection;
 let _db = null;
@@ -56,5 +57,9 @@ class DB {
     
     saveMessage(message, callback) {
         saveMessage(_connection, message, callback);
+    }
+    
+    getHistory(options, callback) {
+        getHistory(_connection, options, callback);
     }
 }

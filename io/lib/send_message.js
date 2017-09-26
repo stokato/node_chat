@@ -7,14 +7,16 @@ const md5   = require('md5');
 
 const sanitize = require('./sanitize');
 const db = require('./../../db');
+const vidList = require('./../vid_list');
 
 const Config     = require('./../../config.json');
 
 /**
  * Отправляет сообщение
  *  - выполняет проверку токена вк
+ *  - сохраняет сокет в список vidList
  *  - формирует объект сообщения
- *  - отпрвляет всем клиентам
+ *  - отпрвляет клиенту с указанным vid
  *
  * @param socket            сокет
  */
@@ -23,6 +25,8 @@ module.exports = function (socket) {
         if(options['auth_key'] !== md5(Config.auth.APIID + "_" + options.vid_from + "_" + Config.auth.APISECRET)) {
             return;
         }
+
+        let unixTimestamp = Math.round(new Date().getTime() / 1000);
         
         let message = {
             chat_vid: sanitize(options.chat_vid),
@@ -31,7 +35,8 @@ module.exports = function (socket) {
             message_text: sanitize(options.message_text),
             message_id: uuid4(),
             type: sanitize(options.type),
-            params: options.params
+            params: options.params,
+            timestamp: unixTimestamp
         };
         
         db.getConnection().saveMessage(message, (err, res) => {
@@ -41,7 +46,12 @@ module.exports = function (socket) {
                 return console.error('Ошибка при сохранении сообщения в БД');
             }
     
-            socket.broadcast.emit('message', message);
+            let socketTo = vidList[options.vid_to];
+            
+            if (socketTo) {
+                socketTo.emit('message', message);
+            }
+            
             socket.emit('message', message);
         });
     });

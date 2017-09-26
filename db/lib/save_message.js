@@ -5,11 +5,11 @@
 module.exports = (connection, message, callback) => {
     "use strict";
     
-    let query = 'INSERT INTO chat_db.messages (chat_vid, vid_from, vid_to, message_text, message_id, type) ' +
-        'VALUES (?, ?, ?, ?, ?, ?)';
+    let query = 'INSERT INTO chat_db.messages (chat_vid, vid_from, vid_to, message_text, message_id, type, timestamp) ' +
+        'VALUES (?, ?, ?, ?, ?, ?, ?)';
     
     let values = [ message.chat_vid, message.vid_from, message.vid_to,
-        message.message_text, message.message_id, message.type];
+        message.message_text, message.message_id, message.type, message.timestamp];
     
     connection.query(query, values, function (error, results, fields) {
         if (error) {

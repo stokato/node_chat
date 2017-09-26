@@ -2,6 +2,9 @@ const socketio  =  require('socket.io');
 
 const sendMessage = require('./lib/send_message');
 const phpBroadcast = require('./lib/php_broadcast');
+const getHistory = require('./lib/get_history');
+const disconnect = require('./lib/on_disconnect');
+const init = require('./lib/init');
 const db = require('./../db');
 
 let io = null;                                      // Сокет
@@ -17,11 +20,15 @@ module.exports.listen = function(server, callback) {
     io.sockets.on('connection', function (socket) {
         sendMessage(socket);
         phpBroadcast(socket);
+        getHistory(socket);
+        disconnect(socket);
+        init(socket);
     });
     
     db.getConnection().connect(() => {
         "use strict";
         callback();
-    });
+    })
+    
 };
 
