@@ -12,5 +12,10 @@
       "database": "chat_db",
       "user": "root",
       "password": "root"
-  }
+  },
+  "paths": {
+    "privkey" : "./privatekey.pem",
+    "fullchain" : "./certificate.pem"
+  },
+  "static" : "public"
 }

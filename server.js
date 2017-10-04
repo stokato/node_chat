@@ -1,47 +1,41 @@
-const http = require("http");
-const Config = require('./config.json').server;
-const path = require("path");
+const https = require("https");
 const fs = require("fs");
+const express       = require('express');
+const path          = require('path');
 
-let server = http.createServer();
+const io            = require('./io');
+const config        = require('./config.json');
+const crossDomain   = require('./lib/cross_dimain');
 
-// let server = http.createServer( function(req, res) {
-//
-//     let localPath;
-//     if(req.method == 'GET') {
-//
-//         localPath = path.join(__dirname, '/public/', "index.html");
-//
-//         fs.exists(localPath, function(exists) {
-//             if(exists) {
-//                 getFile(localPath, res, "text/html");
-//             } else {
-//                 console.log("File not found: " + localPath);
-//                 res.writeHead(404);
-//                 res.end();
-//             }
-//         });
-//     }
-//
-// });
+const options = {
+    key: fs.readFileSync(config.paths.privkey),
+    cert: fs.readFileSync(config.paths.fullchain)
+};
 
-server.listen(Config.port, function() {
-    require('./io').listen(server, function(){
-        console.log('Server running at: ' + Config.host + ':' + Config.port);
-    });
+let app = express();
+
+app.use(express.static(path.join(__dirname, config.static)));
+
+// app.use(getCert);
+
+app.use(crossDomain);
+
+app.use(function(req, res, next) {
+    res.status(404);
+    res.send({ error : 'Not found' });
 });
 
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.send({ error : err.message });
+});
 
-// function getFile(localPath, res, mimeType) {
-//     fs.readFile(localPath, function(err, contents) {
-//         if(!err) {
-//             res.setHeader("Content-Length", contents.length);
-//             res.setHeader("Content-Type", mimeType);
-//             res.statusCode = 200;
-//             res.end(contents);
-//         } else {
-//             res.writeHead(500);
-//             res.end();
-//         }
-//     });
-// }
+let server = https.createServer(options, app);
+
+server.listen(config.server.port, function() {
+    console.log('Sever running at: ' + config.server.host + ':' + config.server.port );
+});
+
+io.listen(server, function(err){
+    console.log('Socket server listening on port :' + config.server.port);
+});
